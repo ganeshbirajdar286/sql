@@ -102,8 +102,6 @@ select dept,count(emp_id) ,sum(salary) from  employees group by dept;
 | Cash    |             2 |       45000 |
 | Account |             2 |      123000 |
 | Deposit |             1 |       50000 |
-| 
-04:10:42 CASE to IT      |             1 |       27500 |
 +---------+---------------+-------------+
 
 
@@ -204,3 +202,19 @@ select * from person
 +------+------+---------------------+
 | NULL | NULL | 2022-04-17 22:00:00 |
 +------+------+---------------------+
+
+--  use if null
+
+SELECT name, IFNULL(email,'No Email') AS email
+    -> FROM customers;
++---------+------------------+
+| name    | email            |
++---------+------------------+
+| Ganesh  | ganesh@gmail.com |
+| Raju    | raju@email.com   |
+| Sham    | sham@email.com   |
+| Baburao | babu@email.com   |
+| Paul    | paul@email.com   |
+| Alex    | alex@email.com   |
++---------+------------------+
+-- if any filed as no email then if null will put  'No Email'

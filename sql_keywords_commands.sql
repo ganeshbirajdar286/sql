@@ -22,6 +22,9 @@ show tables;
 | students            |
 +---------------------+
 
+-- create database 
+create database store;
+
 --delete tables
 
 DROP TABLE employee;  --name of  table
@@ -88,6 +91,31 @@ select * from students;
 |  103 | Raju |    10 |     134 |
 |  104 | Sham |     6 |      34 |
 +------+------+-------+---------+
+
+--delete clause 
+
+select * from students;
++------+------+-------+---------+
+| id   | name | class | contact |
++------+------+-------+---------+
+|  101 | Paul |     5 |      34 |
+|  102 | Alex |     8 |      34 |
+|  103 | Raju |    10 |     134 |
+|  104 | Sham |     6 |      34 |
++------+------+-------+---------+
+
+DELETE FROM students
+    WHERE name = "raju";
+
+ select * from students;
++------+------+-------+---------+
+| id   | name | class | contact |
++------+------+-------+---------+
+|  101 | Paul |     5 |      34 |
+|  102 | Alex |     8 |      34 |
+|  104 | Sham |     6 |      34 |
++------+------+-------+---------+
+
 
 
 
