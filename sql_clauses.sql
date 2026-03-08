@@ -195,3 +195,64 @@ select * from employees limit 3,3;  -- LIMIT (offset, count)  offset → number 
 |    105 | Alex  | Watt   | Associate  | Deposit |  50000 |
 |    106 | Rick  | Watt   | Manager    | Account |  75000 |
 +--------+-------+--------+------------+---------+--------+
+
+-- having (is a clause use in group  by )
+select * from inst_info;
++--------------+-------------+------+
+| student_name | course_name | fees |
++--------------+-------------+------+
+| Raju         | Java        | 5000 |
+| Raju         | SQL         | 4000 |
+| Raju         | Linux       | 3500 |
+| Sham         | Linux       | 3500 |
+| Sham         | Python      | 6000 |
+| Paul         | Python      | 6000 |
++--------------+-------------+------+
+
+select student_name,sum(fees) as total_fees  from inst_info group by student_name
+    -> having total_fees >10000;
++--------------+------------+
+| student_name | total_fees |
++--------------+------------+
+| Raju         |      12500 |
++--------------+------------+
+
+-- with Rollup
+
+select student_name,sum(fees) as total_fees  from inst_info 
+group by student_name with rollup;
++--------------+------------+
+| student_name | total_fees |
++--------------+------------+
+| Paul         |       6000 |
+| Raju         |      12500 |
+| Sham         |       9500 |
+| NULL         |      28000 |   --(rollup give total of table and null is coming because of  rollup)
++--------------+------------+
+
+
+select ifnull(student_name,"total") as  student_name,sum(fees) as total_fees  from inst_info 
+group by student_name with rollup;
+
++--------------+------------+
+| student_name | total_fees |
++--------------+------------+
+| Paul         |       6000 |
+| Raju         |      12500 |
+| Sham         |       9500 |
+| total        |      28000 |
++--------------+------------+
+
+
+select ifnull(student_name,"total") as  student_name,sum(fees) as total_fees ,count(fees) as fees from inst_info 
+group by student_name with rollup;
+
++--------------+------------+------+
+| student_name | total_fees | fees |
++--------------+------------+------+
+| Paul         |       6000 |    1 |
+| Raju         |      12500 |    3 |
+| Sham         |       9500 |    2 |
+| total        |      28000 |    6 |
++--------------+------------+------+
+
