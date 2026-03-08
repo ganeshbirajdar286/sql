@@ -352,3 +352,220 @@ create table orders(
  delete from customers where name="raju";
 
 
+--  eg of inner join and case then
+select * from authors;
++-----------+-------------+
+| author_id | author_name |
++-----------+-------------+
+|         1 | Raju        |
+|         2 | Sham        |
+|         3 | Baburao     |
+|         4 | Paul        |
++-----------+-------------+
+
+
+ select * from books;
++---------+----------------------+---------+-------+
+| book_id | title                | ratings | au_id |
++---------+----------------------+---------+-------+
+|       1 | Story of Raju        |       5 |     1 |
+|       2 | Story of Baburao     |       4 |     3 |
+|       3 | Raju - The Great Man |       2 |     1 |
+|       4 | Love story by Sham   |       1 |     2 |
++---------+----------------------+---------+-------+
+
+
+ SELECT a.author_name,
+    ->     b.ratings,
+    ->        CASE
+    ->            WHEN b.ratings > 4 THEN 'Good'
+    ->            WHEN b.ratings > 1 THEN 'Average'
+    ->            ELSE 'Fail'
+    ->        END AS remark
+    -> FROM authors a
+    -> INNER JOIN books b
+    -> ON a.author_id = b.au_id;
++-------------+---------+---------+
+| author_name | ratings | remark  |
++-------------+---------+---------+
+| Raju        |       5 | Good    |
+| Baburao     |       4 | Average |
+| Raju        |       2 | Average |
+| Sham        |       1 | Fail    |
++-------------+---------+---------+
+
+
+
+-- many to many 
+
+ create table students(
+    -> id int primary key  auto_increment,
+    -> student_name varchar(30) );
+
+    INSERT INTO students (student_name)
+    -> VALUES ('Raju'), ('Sham'), ('Paul'), ('Alex');
+
+    select * from students;
++----+--------------+
+| id | student_name |
++----+--------------+
+|  1 | Raju         |
+|  2 | Sham         |
+|  3 | Paul         |
+|  4 | Alex         |
++----+--------------+
+
+
+
+create table courses(
+    -> id int primary key auto_increment ,
+    -> course_name varchar(50),
+    -> fees float 
+    -> );
+
+    INSERT INTO courses(course_name, fees)
+    -> VALUES 
+    -> ('Java', 5000),
+    -> ('SQL', 4000),
+    -> ('Python', 6000),
+    -> ('Linux', 3500);
+
+     select * from courses;
++----+-------------+------+
+| id | course_name | fees |
++----+-------------+------+
+|  1 | Java        | 5000 |
+|  2 | SQL         | 4000 |
+|  3 | Python      | 6000 |
+|  4 | Linux       | 3500 |
++----+-------------+------+
+
+
+    CREATE TABLE student_course (
+    ->     student_id INT,
+    ->     course_id INT,
+    ->     FOREIGN KEY (student_id) REFERENCES students(id),
+    ->     FOREIGN KEY (course_id) REFERENCES courses(id)
+    -> );
+
+INSERT INTO student_course (student_id, course_id)
+    -> VALUES 
+    -> (1,1),
+    -> (1,2),
+    -> (2,4),
+    -> (1,4),
+    -> (3,3),
+    -> (2,3);
+
+    select * from student_course;
++------------+-----------+
+| student_id | course_id |
++------------+-----------+
+|          1 |         1 |
+|          1 |         2 |
+|          2 |         4 |
+|          1 |         4 |
+|          3 |         3 |
+|          2 |         3 |
++------------+-----------+
+
+
+--  use join in many-to-many relation
+
+select * from students
+    -> join student_course on student_course.student_id = students.id;
++----+--------------+------------+-----------+
+| id | student_name | student_id | course_id |
++----+--------------+------------+-----------+
+|  1 | Raju         |          1 |         1 |
+|  1 | Raju         |          1 |         2 |
+|  1 | Raju         |          1 |         4 |
+|  2 | Sham         |          2 |         4 |
+|  2 | Sham         |          2 |         3 |
+|  3 | Paul         |          3 |         3 |
++----+--------------+------------+-----------+
+
+
+ select  student_name,course_id from students join student_course on student_course.student_id = students.id;
++--------------+-----------+
+| student_name | course_id |
++--------------+-----------+
+| Raju         |         1 |
+| Raju         |         2 |
+| Raju         |         4 |
+| Sham         |         4 |
+| Sham         |         3 |
+| Paul         |         3 |
++--------------+-----------+
+
+
+select student_name,course_name from students
+    -> join student_course on student_course.student_id =students.id
+    -> join courses  on student_course.course_id=courses.id;
++--------------+-------------+
+| student_name | course_name |
++--------------+-------------+
+| Raju         | Java        |
+| Raju         | SQL         |
+| Raju         | Linux       |
+| Sham         | Linux       |
+| Sham         | Python      |
+| Paul         | Python      |
++--------------+-------------+
+
+select student_name ,count(student_id) from students join student_course on student_course.student_id=students.id group by student_name;
++--------------+-------------------+
+| student_name | count(student_id) |
++--------------+-------------------+
+| Raju         |                 3 |
+| Sham         |                 2 |
+| Paul         |                 1 |
++--------------+-------------------+
+
+--views (virtual table)
+
+create view  inst_info as
+select student_name,course_name,fees from students
+join student_course on student_course.student_id=students.id
+join courses on student_course.course_id=courses.id;
+
+show tables;
++-----------------+
+| Tables_in_store |
++-----------------+
+| authors         |
+| books           |
+| courses         |
+| customers       |
+| inst_info       |
+| orders          |
+| student_course  |
+| students        |
++-----------------+
+
+select * from inst_info;   --(this is virtual table  )
++--------------+-------------+------+
+| student_name | course_name | fees |
++--------------+-------------+------+
+| Raju         | Java        | 5000 |
+| Raju         | SQL         | 4000 |
+| Raju         | Linux       | 3500 |
+| Sham         | Linux       | 3500 |
+| Sham         | Python      | 6000 |
+| Paul         | Python      | 6000 |
++--------------+-------------+------+
+
+drop view inst_info;
+
+show tables;
++-----------------+
+| Tables_in_store |
++-----------------+
+| authors         |
+| books           |
+| courses         |
+| customers       |
+| orders          |
+| student_course  |
+| students        |
++-----------------+
