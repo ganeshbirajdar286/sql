@@ -61,6 +61,12 @@ select * from students order  by name desc;
 
 -- LIKE Clause
 
+ SQL Clause,What it looks for,Examples it matches
+WHERE CITY = 'A',"Exactly the letter A
+WHERE CITY LIKE 'A%',"Starts with A
+WHERE CITY LIKE '%A',"Ends with A
+WHERE CITY LIKE '%A%',"""A"" anywhere in the name
+
  select  * from employees;
 +--------+---------+---------+------------+---------+
 | emp_id | fname   | lname   | desig      | dept    |
